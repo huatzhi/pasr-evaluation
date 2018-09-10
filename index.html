@@ -6,63 +6,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Trade Evaluator</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.blue-cyan.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+
   <link rel="stylesheet" href="app.css">
-  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="app.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script defer src="app.js"></script>
 </head>
 
 <body>
-  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-    <header class="mdl-layout__header">
-      <div class="mdl-layout__header-row">
-        <!-- Title -->
-        <span class="mdl-layout-title">PASR Trade Evaluation Helper</span>
-        <!-- Add spacer, to align navigation to the right -->
-        <div class="mdl-layout-spacer"></div>
-        <!-- Navigation. We hide it in small screens. -->
-        <nav class="mdl-navigation mdl-layout--large-screen-only">
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
-        </nav>
-      </div>
-    </header>
-    <div class="mdl-layout__drawer">
-      <span class="mdl-layout-title">PASR Trade Evaluation Helper</span>
-      <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-      </nav>
-    </div>
-    <main class="mdl-layout__content">
-      <div class="page-content">
-        <!-- CONTENT START -->
-        <div id="app">
-          <div class="mdl-card mdl-shadow--4dp card-common">
-            <div class="mdl-card__title">
-              <h2 class="mdl-card__title-text">The instrument you trade:</h2>
-            </div>
-
-            <div class="mdl-card__supporting-text">
-              Auckland Sky Tower, taken March 24th, 2014
-            </div>
-            <div class="mdl-card__supporting-text">
-              The Sky Tower is an observation and telecommunications tower located in Auckland,
-              New Zealand. It is 328 metres (1,076 ft) tall, making it the tallest man-made structure
-              in the Southern Hemisphere.
-            </div>
-          </div>
+  <div class="container">
+    <nav class="navbar navbar-light bg-light">
+      <a class="navbar-brand" href="#">
+        PASR Trade Evaluator
+      </a>
+    </nav>
+    <div id="app">
+      <div class="card card-common" v-if="page == 'step-1'" ref="step1">
+        <div class="card-header">
+          Your pair/instrument
         </div>
-        <!-- CONTENT END -->
+        <div class="card-body">
+          <input class="form-control" type="text" v-model="instrument" placeholder="(e.g. GBPUSD)" @keyup.enter="toSecondStep">
+          
+        </div>
+        <div class="card-footer">
+          <button type="button" class="btn btn-primary" @click="toSecondStep">Next</button>
+        </div>
       </div>
-    </main>
+
+      <div class="card card-common" v-if="page == 'example-card'" ref="example-card">
+        <div class="card-header">
+          Featured
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Special title treatment</h5>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a href="https://getbootstrap.com/docs/4.1/components/card/" class="btn btn-primary">Bootstrap Documentation for Card</a>
+        </div>
+      </div>
+    </div>
   </div>
+  
+        
+     
 
 </body>
 
