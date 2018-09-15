@@ -16,6 +16,8 @@
     crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
     crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js" integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl"
+    crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script defer src="app.js"></script>
 </head>
@@ -28,6 +30,7 @@
       </a>
     </nav>
     <div id="app">
+      <!-- step 1 -->
       <div class="card card-common" v-if="page == 'step-1'" ref="step1">
         <h5 class="card-header">
           Your pair/instrument
@@ -41,6 +44,7 @@
         </div>
       </div>
 
+      <!-- step 2 -->
       <div class="card card-common" v-if="page == 'step-2'" ref="step2">
         <h5 class="card-header">
           Long or Short? (Please select one)
@@ -62,6 +66,7 @@
         </div>
       </div>
 
+      <!-- step 3 -->
       <div class="card card-common" v-if="page == 'step-3'" ref="step3">
         <h5 class="card-header">
           Big Boss <span v-if="bbTimeframe">- {{ bbTimeframe }}</span>
@@ -85,22 +90,1028 @@
             </select>
             <input type="text" class="form-control mt-1" v-if="bbTrend" v-model="bbTrendRemark" placeholder="Comment" />
           </div>
-
+          <!-- Pro -->
           <h4 class="card-title mt-5">Pro</h4>
-          <h5>PASR</h5>
+          <h5 class="mt-2">PASR</h5>
           <h6>PA</h6>
           <div class="form-group form-check">
             <input class="form-check-input" type="checkbox" value="" id="bb-pro-engulfing" v-model="bbPro.engulfing" />
             <label class="form-check-label" for="bb-pro-engulfing">{{ engulfingCandle[tradeAction] }}</label>
-            <input type="text" class="form-control mt-1" v-if="bbPro.engulfing" v-model="bbPro.engulfingComment" placeholder="Comment" />
+            <input type="text" class="form-control mt-1" v-if="bbPro.engulfing" v-model="bbPro.engulfingComment"
+              placeholder="Comment" />
           </div>
           <div class="form-group form-check">
             <input class="form-check-input" type="checkbox" value="" id="bb-pro-long-wick-pa" v-model="bbPro.longWickPA" />
             <label class="form-check-label" for="bb-pro-long-wick-pa">{{ longWickPA[tradeAction] }}</label>
-            <input type="text" class="form-control mt-1" v-if="bbPro.longWickPA" v-model="bbPro.longWickPAComment" placeholder="Comment" />
+            <input type="text" class="form-control mt-1" v-if="bbPro.longWickPA" v-model="bbPro.longWickPAComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-outsideBar" v-model="bbPro.outsideBar" />
+            <label class="form-check-label" for="bb-pro-outsideBar">{{ outsideBar[tradeAction] }}</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.outsideBar" v-model="bbPro.outsideBarComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check" v-if="tradeAction == 'short'">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-hangingMan" v-model="bbPro.hangingMan" />
+            <label class="form-check-label" for="bb-pro-hangingMan">Second Candle Confirm Hanging Man</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.hangingMan" v-model="bbPro.hangingManComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-insideBar" v-model="bbPro.insideBar" />
+            <label class="form-check-label" for="bb-pro-insideBar">Inside Bar <span class="badge badge-warning"
+                data-toggle="tooltip" data-placement="right" title="Please ensure you know what you are doing before trading inside bar.">WARNING</span></label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.insideBar" v-model="bbPro.insideBarComment"
+              placeholder="Comment" />
+          </div>
+          <h6>SR</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-sr" v-model="bbPro.sr" />
+            <label class="form-check-label" for="bb-pro-sr">Around {{ sr[tradeAction] }} Area</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.sr" v-model="bbPro.srComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-stratShadow" v-model="bbPro.stratShadow" />
+            <label class="form-check-label" for="bb-pro-stratShadow">{{ tradeAction == "long" ? "Supported" :
+              "Resisted"}} by Strat Shadow</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.stratShadow" v-model="bbPro.stratShadowComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-dsr" v-model="bbPro.dsr" />
+            <label class="form-check-label" for="bb-pro-dsr">{{ tradeAction == "long" ? "Supported" : "Resisted"}} by
+              Dynamic SR or Trend Line</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.dsr" v-model="bbPro.dsrComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-brn" v-model="bbPro.brn" />
+            <label class="form-check-label" for="bb-pro-brn">{{ tradeAction == "long" ? "Supported" : "Resisted"}} by
+              Big Round Number (BRN)</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.brn" v-model="bbPro.brnComment" placeholder="Comment" />
+          </div>
+          <!-- confluences -->
+          <h5 class="mt-2">Confluences</h5>
+          <h6>Trend</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-dominantTrend" v-model="bbPro.dominantTrend" />
+            <label class="form-check-label" for="bb-pro-dominantTrend">Against the Dominant Trend</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.dominantTrend" v-model="bbPro.dominantTrendComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-immediateTrend" v-model="bbPro.immediateTrend" />
+            <label class="form-check-label" for="bb-pro-immediateTrend">Against the Immediate Trend</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.immediateTrend" v-model="bbPro.immediateTrendComment"
+              placeholder="Comment" />
+          </div>
+          <h6>SR</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-srRejectedRecently" v-model="bbPro.srRejectedRecently" />
+            <label class="form-check-label" for="bb-pro-srRejectedRecently">Current SR Rejected Recently</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.srRejectedRecently" v-model="bbPro.srRejectedRecentlyComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbPro.srRejectedRecently">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-multipleSrRejectionRecently" v-model="bbPro.multipleSrRejectionRecently" />
+            <label class="form-check-label" for="bb-pro-multipleSrRejectionRecently">Current SR Rejected Recently</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.multipleSrRejectionRecently" v-model="bbPro.multipleSrRejectionRecentlyComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-strongCloseAcrossSr" v-model="bbPro.strongCloseAcrossSr" />
+            <label class="form-check-label" for="bb-pro-strongCloseAcrossSr">Strong Close Across SR (Break Out)</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.strongCloseAcrossSr" v-model="bbPro.strongCloseAcrossSrComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Strat Shadow as Dynamic SR</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-rejectedByStratShadow" v-model="bbPro.rejectedByStratShadow" />
+            <label class="form-check-label" for="bb-pro-rejectedByStratShadow">Rejected by Strat Shadow</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.rejectedByStratShadow" v-model="bbPro.rejectedByStratShadowComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-crossingStratShadow" v-model="bbPro.crossingStratShadow" />
+            <label class="form-check-label" for="bb-pro-crossingStratShadow">Price crossing the Strat Shadow {{
+              tradeAction == 'long' ? "upward" : "downward"
+              }}.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.crossingStratShadow" v-model="bbPro.crossingStratShadowComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbPro.crossingStratShadow">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-singleCandleStratShadowCross" v-model="bbPro.singleCandleStratShadowCross" />
+            <label class="form-check-label" for="bb-pro-singleCandleStratShadowCross">The whole Strat Shadow crossed
+              with a
+              single candle show that the momentum could be strong.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.singleCandleStratShadowCross" v-model="bbPro.singleCandleStratShadowCrossComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Strat Shadow as Momentum Teller</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-stratShadowShrinking" v-model="bbPro.stratShadowShrinking" />
+            <label class="form-check-label" for="bb-pro-stratShadowShrinking">{{ tradeAction == 'long' ? "Red" :
+              "Green" }} Strat Shadow Shrinking as {{tradeAction == 'long' ? "Selling" : "Buying"}} Momentum
+              Decreasing.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.stratShadowShrinking" v-model="bbPro.stratShadowShrinkingComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-stratShadowWidening" v-model="bbPro.stratShadowWidening" />
+            <label class="form-check-label" for="bb-pro-stratShadowWidening">{{ tradeAction == 'long' ? "Green" : "Red"
+              }} Strat
+              Shadow Widening as {{tradeAction == 'long' ? "Buying" : "Selling"}} Momentum Increasing.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.stratShadowWidening" v-model="bbPro.stratShadowWideningComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-stratShadowMagnitude" v-model="bbPro.stratShadowMagnitude" />
+            <label class="form-check-label" for="bb-pro-stratShadowMagnitude">{{ tradeAction == 'long' ? "Positive" :
+              "Negative" }} Strat
+              Shadow show that {{tradeAction == 'long' ? "Buyers" : "Sellers"}} are in control.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.stratShadowMagnitude" v-model="bbPro.stratShadowMagnitudeComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-stratShadowEmaGradient" v-model="bbPro.stratShadowEmaGradient" />
+            <label class="form-check-label" for="bb-pro-stratShadowEmaGradient">Both Strat Shadow EMA having {{
+              tradeAction == 'long' ? "positive" : "negative"}} gradient.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.stratShadowEmaGradient" v-model="bbPro.stratShadowEmaGradientComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Trend Line / DSR</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-dsrBreak" v-model="bbPro.dsrBreak" />
+            <label class="form-check-label" for="bb-pro-dsrBreak">A strong close {{ tradeAction == 'long' ? 'above' :
+              'below' }} the Trend Line / DSR as a break out.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.dsrBreak" v-model="bbPro.dsrBreakComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-dsrRejection" v-model="bbPro.dsrRejection" />
+            <label class="form-check-label" for="bb-pro-dsrRejection">The Trend Line / DSR has {{ tradeAction == 'long'
+              ? 'supported' : 'resisted' }} the price. Rejection occur.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.dsrRejection" v-model="bbPro.dsrRejectionComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Fibonacci</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-fibLevelRejection" v-model="bbPro.fibLevelRejection" />
+            <label class="form-check-label" for="bb-pro-fibLevelRejection">The reversal PA occur on a fibonacci level.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.fibLevelRejection" v-model="bbPro.fibLevelRejectionComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Swings</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-swingBreakThrough" v-model="bbPro.swingBreakThrough" />
+            <label class="form-check-label" for="bb-pro-swingBreakThrough">Swing had broken through previous swing {{
+              tradeAction == 'long' ? 'high' : 'low' }} that made a {{ tradeAction == 'long' ? 'HH' : 'LL' }}.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.swingBreakThrough" v-model="bbPro.swingBreakThroughComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-rejectedPreviousSwing" v-model="bbPro.rejectedPreviousSwing" />
+            <label class="form-check-label" for="bb-pro-rejectedPreviousSwing">The price has been rejected by previous
+              swing high or swing low.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.rejectedPreviousSwing" v-model="bbPro.rejectedPreviousSwingComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Momentum Candle</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-longBar" v-model="bbPro.longBar" />
+            <label class="form-check-label" for="bb-pro-longBar">Long {{ tradeAction == 'long' ? 'bullish' : 'bearish'
+              }} candle bar show that the momentum is strong.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.longBar" v-model="bbPro.longBarComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-shrinkingBar" v-model="bbPro.shrinkingBar" />
+            <label class="form-check-label" for="bb-pro-shrinkingBar">The size of the {{ tradeAction == 'long' ?
+              'bearish' : 'bullish' }} candle are gradually decrease showing that the momentum is decreasing.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.shrinkingBar" v-model="bbPro.shrinkingBarComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Wick Rejections</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-wickRejection" v-model="bbPro.wickRejection" />
+            <label class="form-check-label" for="bb-pro-wickRejection">Wick show that it is rejecting a price level
+              (e.g. SR, TL).</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.wickRejection" v-model="bbPro.wickRejectionComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbPro.wickRejection">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-multipleWicksRejections" v-model="bbPro.multipleWicksRejections" />
+            <label class="form-check-label" for="bb-pro-multipleWicksRejections">Multiple wick rejecting the price
+              level.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.multipleWicksRejections" v-model="bbPro.multipleWicksRejectionsComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Price Pattern</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-headAndShoulder" v-model="bbPro.headAndShoulder" />
+            <label class="form-check-label" for="bb-pro-headAndShoulder">A {{ tradeAction == 'long' ? 'reversed ' : ''
+              }}head and shoulder is formed.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.headAndShoulder" v-model="bbPro.headAndShoulderComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbPro.headAndShoulder">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-hnSSlantedNeckLine" v-model="bbPro.hnSSlantedNeckLine" />
+            <label class="form-check-label" for="bb-pro-hnSSlantedNeckLine">The neckline of head and shoulder is
+              slanted {{ tradeAction == 'long' ? 'upward' : 'downward' }}.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.hnSSlantedNeckLine" v-model="bbPro.hnSSlantedNeckLineComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-wedges" v-model="bbPro.wedges" />
+            <label class="form-check-label" for="bb-pro-wedges">A {{ tradeAction == 'long' ? 'falling' : 'rising' }}
+              wedge is formed.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.wedges" v-model="bbPro.wedgesComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbPro.wedges">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-brokeAndRetest" v-model="bbPro.brokeAndRetest" />
+            <label class="form-check-label" for="bb-pro-brokeAndRetest">A breakout and retest of wedges is formed.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.brokeAndRetest" v-model="bbPro.brokeAndRetestComment"
+              placeholder="Comment" />
+          </div>
+          <h6>9 EMA</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-nineEmaGradient" v-model="bbPro.nineEmaGradient" />
+            <label class="form-check-label" for="bb-pro-nineEmaGradient">9 EMA gradient is pointing {{ tradeAction == 'long' ? 'upward' : 'downward' }}.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.nineEmaGradient" v-model="bbPro.nineEmaGradientComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-nineRelativeClose" v-model="bbPro.nineRelativeClose" />
+            <label class="form-check-label" for="bb-pro-nineRelativeClose">Price closed {{ tradeAction == 'long' ? 'above' : 'below' }} the 9 EMA.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.nineRelativeClose" v-model="bbPro.nineRelativeCloseComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-nineRelativeStratShadow" v-model="bbPro.nineRelativeStratShadow" />
+            <label class="form-check-label" for="bb-pro-nineRelativeStratShadow">9 EMA stay {{ tradeAction == 'long' ? 'above' : 'below' }} the Strat Shadow.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.nineRelativeStratShadow" v-model="bbPro.nineRelativeStratShadowComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbPro.nineRelativeStratShadow">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-nineFarFromStratShadow" v-model="bbPro.nineFarFromStratShadow" />
+            <label class="form-check-label" for="bb-pro-nineFarFromStratShadow">9 EMA is far away from strat shadow showing a strong momentum.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.nineFarFromStratShadow" v-model="bbPro.nineFarFromStratShadowComment"
+              placeholder="Comment" />
+          </div>
+          <!-- Con -->
+          <h4 class="card-title mt-5">Con</h4>
+          <h5 class="mt-2">PASR</h5>
+          <h6>PA</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-engulfing" v-model="bbCon.engulfing" />
+            <label class="form-check-label" for="bb-con-engulfing">{{ engulfingCandle[conDirection] }}</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.engulfing" v-model="bbCon.engulfingComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-long-wick-pa" v-model="bbCon.longWickPA" />
+            <label class="form-check-label" for="bb-con-long-wick-pa">{{ longWickPA[conDirection] }}</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.longWickPA" v-model="bbCon.longWickPAComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-outsideBar" v-model="bbCon.outsideBar" />
+            <label class="form-check-label" for="bb-con-outsideBar">{{ outsideBar[conDirection] }}</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.outsideBar" v-model="bbCon.outsideBarComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check" v-if="conDirection == 'short'">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-hangingMan" v-model="bbCon.hangingMan" />
+            <label class="form-check-label" for="bb-con-hangingMan">Second Candle Confirm Hanging Man</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.hangingMan" v-model="bbCon.hangingManComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-insideBar" v-model="bbCon.insideBar" />
+            <label class="form-check-label" for="bb-con-insideBar">Inside Bar <span class="badge badge-warning" data-toggle="tooltip"
+                data-placement="right" title="Please ensure you know what you are doing before trading inside bar.">WARNING</span></label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.insideBar" v-model="bbCon.insideBarComment" placeholder="Comment" />
+          </div>
+          <h6>SR</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-sr" v-model="bbCon.sr" />
+            <label class="form-check-label" for="bb-con-sr">Around {{ sr[conDirection] }} Area</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.sr" v-model="bbCon.srComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-stratShadow" v-model="bbCon.stratShadow" />
+            <label class="form-check-label" for="bb-con-stratShadow">{{ conDirection == "long" ? "Supported" :
+              "Resisted"}} by Strat Shadow</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.stratShadow" v-model="bbCon.stratShadowComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-dsr" v-model="bbCon.dsr" />
+            <label class="form-check-label" for="bb-con-dsr">{{ conDirection == "long" ? "Supported" : "Resisted"}} by
+              Dynamic SR or Trend Line</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.dsr" v-model="bbCon.dsrComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-brn" v-model="bbCon.brn" />
+            <label class="form-check-label" for="bb-con-brn">{{ conDirection == "long" ? "Supported" : "Resisted"}} by
+              Big Round Number (BRN)</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.brn" v-model="bbCon.brnComment" placeholder="Comment" />
+          </div>
+          <!-- confluences -->
+          <h5 class="mt-2">Confluences</h5>
+          <h6>Trend</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-dominantTrend" v-model="bbCon.dominantTrend" />
+            <label class="form-check-label" for="bb-con-dominantTrend">Along with Dominant Trend</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.dominantTrend" v-model="bbCon.dominantTrendComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-immediateTrend" v-model="bbCon.immediateTrend" />
+            <label class="form-check-label" for="bb-con-immediateTrend">Along with Immediate Trend</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.immediateTrend" v-model="bbCon.immediateTrendComment"
+              placeholder="Comment" />
+          </div>
+          <h6>SR</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-tradeTowardSr" v-model="bbCon.tradeTowardSr" />
+            <label class="form-check-label" for="bb-con-tradeTowardSr">{{ tradeAction == 'long' ? "Buying" : "Selling" }} toward an SR.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.tradeTowardSr" v-model="bbCon.tradeTowardSrComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Strat Shadow as Dynamic SR</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-tradeAgainstStratShadow" v-model="bbCon.tradeAgainstStratShadow" />
+            <label class="form-check-label" for="bb-con-tradeAgainstStratShadow">Trade Against Strat Shadow</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.tradeAgainstStratShadow" v-model="bbCon.tradeAgainstStratShadowComment"
+              placeholder="Comment" />
+          </div>
+          
+          <h6>Strat Shadow as Momentum Teller</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-stratShadowShrinking" v-model="bbCon.stratShadowShrinking" />
+            <label class="form-check-label" for="bb-con-stratShadowShrinking">{{ conDirection == 'long' ? "Red" :
+              "Green" }} Strat Shadow Shrinking as {{conDirection == 'long' ? "Selling" : "Buying"}} Momentum
+              Decreasing.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.stratShadowShrinking" v-model="bbCon.stratShadowShrinkingComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-stratShadowWidening" v-model="bbCon.stratShadowWidening" />
+            <label class="form-check-label" for="bb-con-stratShadowWidening">{{ conDirection == 'long' ? "Green" : "Red"
+              }} Strat
+              Shadow Widening as {{conDirection == 'long' ? "Buying" : "Selling"}} Momentum Increasing.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.stratShadowWidening" v-model="bbCon.stratShadowWideningComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-stratShadowTangled" v-model="bbCon.stratShadowTangled" />
+            <label class="form-check-label" for="bb-con-stratShadowTangled">Strat Shadow's EMA tangled showing that the market is ranging.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.stratShadowTangled" v-model="bbCon.stratShadowTangledComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-priceStuckInStratShadow" v-model="bbCon.priceStuckInStratShadow" />
+            <label class="form-check-label" for="bb-con-priceStuckInStratShadow">Price stuck in Strat Shadow showing consolidation.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.priceStuckInStratShadow" v-model="bbCon.priceStuckInStratShadowComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-stratShadowMagnitude" v-model="bbCon.stratShadowMagnitude" />
+            <label class="form-check-label" for="bb-con-stratShadowMagnitude">{{ conDirection == 'long' ? "Positive" :
+              "Negative" }} Strat
+              Shadow show that {{conDirection == 'long' ? "Buyers" : "Sellers"}} are in control.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.stratShadowMagnitude" v-model="bbCon.stratShadowMagnitudeComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-stratShadowEmaGradient" v-model="bbCon.stratShadowEmaGradient" />
+            <label class="form-check-label" for="bb-con-stratShadowEmaGradient">Both Strat Shadow EMA having {{
+              conDirection == 'long' ? "positive" : "negative"}} gradient.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.stratShadowEmaGradient" v-model="bbCon.stratShadowEmaGradientComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Trend Line / DSR</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-tradeTowardDsr" v-model="bbCon.tradeTowardDsr" />
+            <label class="form-check-label" for="bb-con-tradeTowardDsr">{{ tradeAction == 'long' ? "Buying" : "Selling" }} toward Trend Line / DSR.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.tradeTowardDsr" v-model="bbCon.tradeTowardDsrComment" placeholder="Comment" />
+          </div>
+          <h6>Swings</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-swingBreakThrough" v-model="bbCon.swingBreakThrough" />
+            <label class="form-check-label" for="bb-con-swingBreakThrough">Swing had broken through previous swing {{
+              conDirection == 'long' ? 'high' : 'low' }} that made a {{ conDirection == 'long' ? 'HH' : 'LL' }}.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.swingBreakThrough" v-model="bbCon.swingBreakThroughComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Momentum Candle</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-longBar" v-model="bbCon.longBar" />
+            <label class="form-check-label" for="bb-con-longBar">Long {{ conDirection == 'long' ? 'bullish' : 'bearish'
+              }} candle bar show that the momentum is strong.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.longBar" v-model="bbCon.longBarComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-shrinkingBar" v-model="bbCon.shrinkingBar" />
+            <label class="form-check-label" for="bb-con-shrinkingBar">The size of the {{ conDirection == 'long' ?
+              'bearish' : 'bullish' }} candle are gradually decrease showing that the momentum is decreasing.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.shrinkingBar" v-model="bbCon.shrinkingBarComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Wick Rejections</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-wickRejection" v-model="bbCon.wickRejection" />
+            <label class="form-check-label" for="bb-con-wickRejection">Wick show that it is rejecting a price level
+              (e.g. SR, TL).</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.wickRejection" v-model="bbCon.wickRejectionComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbCon.wickRejection">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-multipleWicksRejections" v-model="bbCon.multipleWicksRejections" />
+            <label class="form-check-label" for="bb-con-multipleWicksRejections">Multiple wick rejecting the price
+              level.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.multipleWicksRejections" v-model="bbCon.multipleWicksRejectionsComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Price Pattern</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-headAndShoulder" v-model="bbCon.headAndShoulder" />
+            <label class="form-check-label" for="bb-con-headAndShoulder">A {{ conDirection == 'long' ? 'reversed ' : ''
+              }}head and shoulder is formed.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.headAndShoulder" v-model="bbCon.headAndShoulderComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbCon.headAndShoulder">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-hnSSlantedNeckLine" v-model="bbCon.hnSSlantedNeckLine" />
+            <label class="form-check-label" for="bb-con-hnSSlantedNeckLine">The neckline of head and shoulder is
+              slanted {{ conDirection == 'long' ? 'upward' : 'downward' }}.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.hnSSlantedNeckLine" v-model="bbCon.hnSSlantedNeckLineComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-wedges" v-model="bbCon.wedges" />
+            <label class="form-check-label" for="bb-con-wedges">A {{ conDirection == 'long' ? 'falling' : 'rising' }}
+              wedge is formed.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.wedges" v-model="bbCon.wedgesComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbCon.wedges">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-brokeAndRetest" v-model="bbCon.brokeAndRetest" />
+            <label class="form-check-label" for="bb-con-brokeAndRetest">A breakout and retest of wedges is formed.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.brokeAndRetest" v-model="bbCon.brokeAndRetestComment"
+              placeholder="Comment" />
+          </div>
+          <h6>9 EMA</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-nineEmaGradient" v-model="bbCon.nineEmaGradient" />
+            <label class="form-check-label" for="bb-con-nineEmaGradient">9 EMA gradient is pointing {{ conDirection == 'long' ?
+              'upward' : 'downward' }}.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.nineEmaGradient" v-model="bbCon.nineEmaGradientComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-nineRelativeClose" v-model="bbCon.nineRelativeClose" />
+            <label class="form-check-label" for="bb-con-nineRelativeClose">Price closed {{ conDirection == 'long' ? 'above' :
+              'below' }} the 9 EMA.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.nineRelativeClose" v-model="bbCon.nineRelativeCloseComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-nineRelativeStratShadow" v-model="bbCon.nineRelativeStratShadow" />
+            <label class="form-check-label" for="bb-con-nineRelativeStratShadow">9 EMA stay {{ conDirection == 'long' ? 'above' :
+              'below' }} the Strat Shadow.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.nineRelativeStratShadow" v-model="bbCon.nineRelativeStratShadowComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbCon.nineRelativeStratShadow">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-nineFarFromStratShadow" v-model="bbCon.nineFarFromStratShadow" />
+            <label class="form-check-label" for="bb-con-nineFarFromStratShadow">9 EMA is far away from strat shadow showing a
+              strong momentum.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.nineFarFromStratShadow" v-model="bbCon.nineFarFromStratShadowComment"
+              placeholder="Comment" />
           </div>
 
+        </div>
+        <div class="card-footer">
+          <button type="button" class="btn btn-primary" @click="toForthStep">Next</button>
+          <button type="button" class="btn btn-secondary" @click="page='step-2'">Back</button>
+        </div>
+      </div>
+
+      <!-- step 3 -->
+      <div class="card card-common" v-if="page == 'step-3'" ref="step3">
+        <h5 class="card-header">
+          Big Boss <span v-if="bbTimeframe">- {{ bbTimeframe }}</span>
+          <div class="float-right">
+            <button class="btn btn-danger btn-sm" @click="page='step-4';skipBB=true">Skip BB</button>
+          </div>
+        </h5>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="bbTimeframe">Time Frame</label>
+            <input class="form-control" name="bbTimeframe" id="bbTimeframe" placeholder="(e.g. M)" v-model.trim="bbTimeframe" />
+          </div>
+
+          <div class="form-group">
+            <label for="bb-trend-direction">Immediate Trend Direction / Momentum</label>
+            <select class="form-control" id="bb-trend-direction" v-model="bbTrend">
+              <option>Bullish</option>
+              <option>Bearish</option>
+              <!-- <option>Ranging</option> -->
+              <option>Consolidation</option>
+            </select>
+            <input type="text" class="form-control mt-1" v-if="bbTrend" v-model="bbTrendRemark" placeholder="Comment" />
+          </div>
+          <!-- Pro -->
+          <h4 class="card-title mt-5">Pro</h4>
+          <h5 class="mt-2">PASR</h5>
+          <h6>PA</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-engulfing" v-model="bbPro.engulfing" />
+            <label class="form-check-label" for="bb-pro-engulfing">{{ engulfingCandle[tradeAction] }}</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.engulfing" v-model="bbPro.engulfingComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-long-wick-pa" v-model="bbPro.longWickPA" />
+            <label class="form-check-label" for="bb-pro-long-wick-pa">{{ longWickPA[tradeAction] }}</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.longWickPA" v-model="bbPro.longWickPAComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-outsideBar" v-model="bbPro.outsideBar" />
+            <label class="form-check-label" for="bb-pro-outsideBar">{{ outsideBar[tradeAction] }}</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.outsideBar" v-model="bbPro.outsideBarComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check" v-if="tradeAction == 'short'">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-hangingMan" v-model="bbPro.hangingMan" />
+            <label class="form-check-label" for="bb-pro-hangingMan">Second Candle Confirm Hanging Man</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.hangingMan" v-model="bbPro.hangingManComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-insideBar" v-model="bbPro.insideBar" />
+            <label class="form-check-label" for="bb-pro-insideBar">Inside Bar <span class="badge badge-warning"
+                data-toggle="tooltip" data-placement="right" title="Please ensure you know what you are doing before trading inside bar.">WARNING</span></label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.insideBar" v-model="bbPro.insideBarComment"
+              placeholder="Comment" />
+          </div>
+          <h6>SR</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-sr" v-model="bbPro.sr" />
+            <label class="form-check-label" for="bb-pro-sr">Around {{ sr[tradeAction] }} Area</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.sr" v-model="bbPro.srComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-stratShadow" v-model="bbPro.stratShadow" />
+            <label class="form-check-label" for="bb-pro-stratShadow">{{ tradeAction == "long" ? "Supported" :
+              "Resisted"}} by Strat Shadow</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.stratShadow" v-model="bbPro.stratShadowComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-dsr" v-model="bbPro.dsr" />
+            <label class="form-check-label" for="bb-pro-dsr">{{ tradeAction == "long" ? "Supported" : "Resisted"}} by
+              Dynamic SR or Trend Line</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.dsr" v-model="bbPro.dsrComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-brn" v-model="bbPro.brn" />
+            <label class="form-check-label" for="bb-pro-brn">{{ tradeAction == "long" ? "Supported" : "Resisted"}} by
+              Big Round Number (BRN)</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.brn" v-model="bbPro.brnComment" placeholder="Comment" />
+          </div>
+          <!-- confluences -->
+          <h5 class="mt-2">Confluences</h5>
+          <h6>Trend</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-dominantTrend" v-model="bbPro.dominantTrend" />
+            <label class="form-check-label" for="bb-pro-dominantTrend">Against the Dominant Trend</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.dominantTrend" v-model="bbPro.dominantTrendComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-immediateTrend" v-model="bbPro.immediateTrend" />
+            <label class="form-check-label" for="bb-pro-immediateTrend">Against the Immediate Trend</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.immediateTrend" v-model="bbPro.immediateTrendComment"
+              placeholder="Comment" />
+          </div>
+          <h6>SR</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-srRejectedRecently" v-model="bbPro.srRejectedRecently" />
+            <label class="form-check-label" for="bb-pro-srRejectedRecently">Current SR Rejected Recently</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.srRejectedRecently" v-model="bbPro.srRejectedRecentlyComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbPro.srRejectedRecently">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-multipleSrRejectionRecently" v-model="bbPro.multipleSrRejectionRecently" />
+            <label class="form-check-label" for="bb-pro-multipleSrRejectionRecently">Current SR Rejected Recently</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.multipleSrRejectionRecently" v-model="bbPro.multipleSrRejectionRecentlyComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-strongCloseAcrossSr" v-model="bbPro.strongCloseAcrossSr" />
+            <label class="form-check-label" for="bb-pro-strongCloseAcrossSr">Strong Close Across SR (Break Out)</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.strongCloseAcrossSr" v-model="bbPro.strongCloseAcrossSrComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Strat Shadow as Dynamic SR</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-rejectedByStratShadow" v-model="bbPro.rejectedByStratShadow" />
+            <label class="form-check-label" for="bb-pro-rejectedByStratShadow">Rejected by Strat Shadow</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.rejectedByStratShadow" v-model="bbPro.rejectedByStratShadowComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-crossingStratShadow" v-model="bbPro.crossingStratShadow" />
+            <label class="form-check-label" for="bb-pro-crossingStratShadow">Price crossing the Strat Shadow {{
+              tradeAction == 'long' ? "upward" : "downward"
+              }}.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.crossingStratShadow" v-model="bbPro.crossingStratShadowComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbPro.crossingStratShadow">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-singleCandleStratShadowCross" v-model="bbPro.singleCandleStratShadowCross" />
+            <label class="form-check-label" for="bb-pro-singleCandleStratShadowCross">The whole Strat Shadow crossed
+              with a
+              single candle show that the momentum could be strong.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.singleCandleStratShadowCross" v-model="bbPro.singleCandleStratShadowCrossComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Strat Shadow as Momentum Teller</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-stratShadowShrinking" v-model="bbPro.stratShadowShrinking" />
+            <label class="form-check-label" for="bb-pro-stratShadowShrinking">{{ tradeAction == 'long' ? "Red" :
+              "Green" }} Strat Shadow Shrinking as {{tradeAction == 'long' ? "Selling" : "Buying"}} Momentum
+              Decreasing.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.stratShadowShrinking" v-model="bbPro.stratShadowShrinkingComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-stratShadowWidening" v-model="bbPro.stratShadowWidening" />
+            <label class="form-check-label" for="bb-pro-stratShadowWidening">{{ tradeAction == 'long' ? "Green" : "Red"
+              }} Strat
+              Shadow Widening as {{tradeAction == 'long' ? "Buying" : "Selling"}} Momentum Increasing.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.stratShadowWidening" v-model="bbPro.stratShadowWideningComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-stratShadowMagnitude" v-model="bbPro.stratShadowMagnitude" />
+            <label class="form-check-label" for="bb-pro-stratShadowMagnitude">{{ tradeAction == 'long' ? "Positive" :
+              "Negative" }} Strat
+              Shadow show that {{tradeAction == 'long' ? "Buyers" : "Sellers"}} are in control.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.stratShadowMagnitude" v-model="bbPro.stratShadowMagnitudeComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-stratShadowEmaGradient" v-model="bbPro.stratShadowEmaGradient" />
+            <label class="form-check-label" for="bb-pro-stratShadowEmaGradient">Both Strat Shadow EMA having {{
+              tradeAction == 'long' ? "positive" : "negative"}} gradient.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.stratShadowEmaGradient" v-model="bbPro.stratShadowEmaGradientComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Trend Line / DSR</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-dsrBreak" v-model="bbPro.dsrBreak" />
+            <label class="form-check-label" for="bb-pro-dsrBreak">A strong close {{ tradeAction == 'long' ? 'above' :
+              'below' }} the Trend Line / DSR as a break out.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.dsrBreak" v-model="bbPro.dsrBreakComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-dsrRejection" v-model="bbPro.dsrRejection" />
+            <label class="form-check-label" for="bb-pro-dsrRejection">The Trend Line / DSR has {{ tradeAction == 'long'
+              ? 'supported' : 'resisted' }} the price. Rejection occur.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.dsrRejection" v-model="bbPro.dsrRejectionComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Fibonacci</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-fibLevelRejection" v-model="bbPro.fibLevelRejection" />
+            <label class="form-check-label" for="bb-pro-fibLevelRejection">The reversal PA occur on a fibonacci level.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.fibLevelRejection" v-model="bbPro.fibLevelRejectionComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Swings</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-swingBreakThrough" v-model="bbPro.swingBreakThrough" />
+            <label class="form-check-label" for="bb-pro-swingBreakThrough">Swing had broken through previous swing {{
+              tradeAction == 'long' ? 'high' : 'low' }} that made a {{ tradeAction == 'long' ? 'HH' : 'LL' }}.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.swingBreakThrough" v-model="bbPro.swingBreakThroughComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-rejectedPreviousSwing" v-model="bbPro.rejectedPreviousSwing" />
+            <label class="form-check-label" for="bb-pro-rejectedPreviousSwing">The price has been rejected by previous
+              swing high or swing low.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.rejectedPreviousSwing" v-model="bbPro.rejectedPreviousSwingComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Momentum Candle</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-longBar" v-model="bbPro.longBar" />
+            <label class="form-check-label" for="bb-pro-longBar">Long {{ tradeAction == 'long' ? 'bullish' : 'bearish'
+              }} candle bar show that the momentum is strong.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.longBar" v-model="bbPro.longBarComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-shrinkingBar" v-model="bbPro.shrinkingBar" />
+            <label class="form-check-label" for="bb-pro-shrinkingBar">The size of the {{ tradeAction == 'long' ?
+              'bearish' : 'bullish' }} candle are gradually decrease showing that the momentum is decreasing.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.shrinkingBar" v-model="bbPro.shrinkingBarComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Wick Rejections</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-wickRejection" v-model="bbPro.wickRejection" />
+            <label class="form-check-label" for="bb-pro-wickRejection">Wick show that it is rejecting a price level
+              (e.g. SR, TL).</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.wickRejection" v-model="bbPro.wickRejectionComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbPro.wickRejection">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-multipleWicksRejections" v-model="bbPro.multipleWicksRejections" />
+            <label class="form-check-label" for="bb-pro-multipleWicksRejections">Multiple wick rejecting the price
+              level.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.multipleWicksRejections" v-model="bbPro.multipleWicksRejectionsComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Price Pattern</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-headAndShoulder" v-model="bbPro.headAndShoulder" />
+            <label class="form-check-label" for="bb-pro-headAndShoulder">A {{ tradeAction == 'long' ? 'reversed ' : ''
+              }}head and shoulder is formed.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.headAndShoulder" v-model="bbPro.headAndShoulderComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbPro.headAndShoulder">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-hnSSlantedNeckLine" v-model="bbPro.hnSSlantedNeckLine" />
+            <label class="form-check-label" for="bb-pro-hnSSlantedNeckLine">The neckline of head and shoulder is
+              slanted {{ tradeAction == 'long' ? 'upward' : 'downward' }}.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.hnSSlantedNeckLine" v-model="bbPro.hnSSlantedNeckLineComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-wedges" v-model="bbPro.wedges" />
+            <label class="form-check-label" for="bb-pro-wedges">A {{ tradeAction == 'long' ? 'falling' : 'rising' }}
+              wedge is formed.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.wedges" v-model="bbPro.wedgesComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbPro.wedges">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-brokeAndRetest" v-model="bbPro.brokeAndRetest" />
+            <label class="form-check-label" for="bb-pro-brokeAndRetest">A breakout and retest of wedges is formed.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.brokeAndRetest" v-model="bbPro.brokeAndRetestComment"
+              placeholder="Comment" />
+          </div>
+          <h6>9 EMA</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-nineEmaGradient" v-model="bbPro.nineEmaGradient" />
+            <label class="form-check-label" for="bb-pro-nineEmaGradient">9 EMA gradient is pointing {{ tradeAction == 'long' ? 'upward' : 'downward' }}.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.nineEmaGradient" v-model="bbPro.nineEmaGradientComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-nineRelativeClose" v-model="bbPro.nineRelativeClose" />
+            <label class="form-check-label" for="bb-pro-nineRelativeClose">Price closed {{ tradeAction == 'long' ? 'above' : 'below' }} the 9 EMA.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.nineRelativeClose" v-model="bbPro.nineRelativeCloseComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-nineRelativeStratShadow" v-model="bbPro.nineRelativeStratShadow" />
+            <label class="form-check-label" for="bb-pro-nineRelativeStratShadow">9 EMA stay {{ tradeAction == 'long' ? 'above' : 'below' }} the Strat Shadow.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.nineRelativeStratShadow" v-model="bbPro.nineRelativeStratShadowComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbPro.nineRelativeStratShadow">
+            <input class="form-check-input" type="checkbox" value="" id="bb-pro-nineFarFromStratShadow" v-model="bbPro.nineFarFromStratShadow" />
+            <label class="form-check-label" for="bb-pro-nineFarFromStratShadow">9 EMA is far away from strat shadow showing a strong momentum.</label>
+            <input type="text" class="form-control mt-1" v-if="bbPro.nineFarFromStratShadow" v-model="bbPro.nineFarFromStratShadowComment"
+              placeholder="Comment" />
+          </div>
+          <!-- Con -->
           <h4 class="card-title mt-5">Con</h4>
+          <h5 class="mt-2">PASR</h5>
+          <h6>PA</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-engulfing" v-model="bbCon.engulfing" />
+            <label class="form-check-label" for="bb-con-engulfing">{{ engulfingCandle[conDirection] }}</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.engulfing" v-model="bbCon.engulfingComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-long-wick-pa" v-model="bbCon.longWickPA" />
+            <label class="form-check-label" for="bb-con-long-wick-pa">{{ longWickPA[conDirection] }}</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.longWickPA" v-model="bbCon.longWickPAComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-outsideBar" v-model="bbCon.outsideBar" />
+            <label class="form-check-label" for="bb-con-outsideBar">{{ outsideBar[conDirection] }}</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.outsideBar" v-model="bbCon.outsideBarComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check" v-if="conDirection == 'short'">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-hangingMan" v-model="bbCon.hangingMan" />
+            <label class="form-check-label" for="bb-con-hangingMan">Second Candle Confirm Hanging Man</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.hangingMan" v-model="bbCon.hangingManComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-insideBar" v-model="bbCon.insideBar" />
+            <label class="form-check-label" for="bb-con-insideBar">Inside Bar <span class="badge badge-warning" data-toggle="tooltip"
+                data-placement="right" title="Please ensure you know what you are doing before trading inside bar.">WARNING</span></label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.insideBar" v-model="bbCon.insideBarComment" placeholder="Comment" />
+          </div>
+          <h6>SR</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-sr" v-model="bbCon.sr" />
+            <label class="form-check-label" for="bb-con-sr">Around {{ sr[conDirection] }} Area</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.sr" v-model="bbCon.srComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-stratShadow" v-model="bbCon.stratShadow" />
+            <label class="form-check-label" for="bb-con-stratShadow">{{ conDirection == "long" ? "Supported" :
+              "Resisted"}} by Strat Shadow</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.stratShadow" v-model="bbCon.stratShadowComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-dsr" v-model="bbCon.dsr" />
+            <label class="form-check-label" for="bb-con-dsr">{{ conDirection == "long" ? "Supported" : "Resisted"}} by
+              Dynamic SR or Trend Line</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.dsr" v-model="bbCon.dsrComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-brn" v-model="bbCon.brn" />
+            <label class="form-check-label" for="bb-con-brn">{{ conDirection == "long" ? "Supported" : "Resisted"}} by
+              Big Round Number (BRN)</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.brn" v-model="bbCon.brnComment" placeholder="Comment" />
+          </div>
+          <!-- confluences -->
+          <h5 class="mt-2">Confluences</h5>
+          <h6>Trend</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-dominantTrend" v-model="bbCon.dominantTrend" />
+            <label class="form-check-label" for="bb-con-dominantTrend">Along with Dominant Trend</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.dominantTrend" v-model="bbCon.dominantTrendComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-immediateTrend" v-model="bbCon.immediateTrend" />
+            <label class="form-check-label" for="bb-con-immediateTrend">Along with Immediate Trend</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.immediateTrend" v-model="bbCon.immediateTrendComment"
+              placeholder="Comment" />
+          </div>
+          <h6>SR</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-tradeTowardSr" v-model="bbCon.tradeTowardSr" />
+            <label class="form-check-label" for="bb-con-tradeTowardSr">{{ tradeAction == 'long' ? "Buying" : "Selling" }} toward an SR.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.tradeTowardSr" v-model="bbCon.tradeTowardSrComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Strat Shadow as Dynamic SR</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-tradeAgainstStratShadow" v-model="bbCon.tradeAgainstStratShadow" />
+            <label class="form-check-label" for="bb-con-tradeAgainstStratShadow">Trade Against Strat Shadow</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.tradeAgainstStratShadow" v-model="bbCon.tradeAgainstStratShadowComment"
+              placeholder="Comment" />
+          </div>
+          
+          <h6>Strat Shadow as Momentum Teller</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-stratShadowShrinking" v-model="bbCon.stratShadowShrinking" />
+            <label class="form-check-label" for="bb-con-stratShadowShrinking">{{ conDirection == 'long' ? "Red" :
+              "Green" }} Strat Shadow Shrinking as {{conDirection == 'long' ? "Selling" : "Buying"}} Momentum
+              Decreasing.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.stratShadowShrinking" v-model="bbCon.stratShadowShrinkingComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-stratShadowWidening" v-model="bbCon.stratShadowWidening" />
+            <label class="form-check-label" for="bb-con-stratShadowWidening">{{ conDirection == 'long' ? "Green" : "Red"
+              }} Strat
+              Shadow Widening as {{conDirection == 'long' ? "Buying" : "Selling"}} Momentum Increasing.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.stratShadowWidening" v-model="bbCon.stratShadowWideningComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-stratShadowTangled" v-model="bbCon.stratShadowTangled" />
+            <label class="form-check-label" for="bb-con-stratShadowTangled">Strat Shadow's EMA tangled showing that the market is ranging.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.stratShadowTangled" v-model="bbCon.stratShadowTangledComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-priceStuckInStratShadow" v-model="bbCon.priceStuckInStratShadow" />
+            <label class="form-check-label" for="bb-con-priceStuckInStratShadow">Price stuck in Strat Shadow showing consolidation.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.priceStuckInStratShadow" v-model="bbCon.priceStuckInStratShadowComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-stratShadowMagnitude" v-model="bbCon.stratShadowMagnitude" />
+            <label class="form-check-label" for="bb-con-stratShadowMagnitude">{{ conDirection == 'long' ? "Positive" :
+              "Negative" }} Strat
+              Shadow show that {{conDirection == 'long' ? "Buyers" : "Sellers"}} are in control.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.stratShadowMagnitude" v-model="bbCon.stratShadowMagnitudeComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-stratShadowEmaGradient" v-model="bbCon.stratShadowEmaGradient" />
+            <label class="form-check-label" for="bb-con-stratShadowEmaGradient">Both Strat Shadow EMA having {{
+              conDirection == 'long' ? "positive" : "negative"}} gradient.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.stratShadowEmaGradient" v-model="bbCon.stratShadowEmaGradientComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Trend Line / DSR</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-tradeTowardDsr" v-model="bbCon.tradeTowardDsr" />
+            <label class="form-check-label" for="bb-con-tradeTowardDsr">{{ tradeAction == 'long' ? "Buying" : "Selling" }} toward Trend Line / DSR.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.tradeTowardDsr" v-model="bbCon.tradeTowardDsrComment" placeholder="Comment" />
+          </div>
+          <h6>Swings</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-swingBreakThrough" v-model="bbCon.swingBreakThrough" />
+            <label class="form-check-label" for="bb-con-swingBreakThrough">Swing had broken through previous swing {{
+              conDirection == 'long' ? 'high' : 'low' }} that made a {{ conDirection == 'long' ? 'HH' : 'LL' }}.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.swingBreakThrough" v-model="bbCon.swingBreakThroughComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Momentum Candle</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-longBar" v-model="bbCon.longBar" />
+            <label class="form-check-label" for="bb-con-longBar">Long {{ conDirection == 'long' ? 'bullish' : 'bearish'
+              }} candle bar show that the momentum is strong.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.longBar" v-model="bbCon.longBarComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-shrinkingBar" v-model="bbCon.shrinkingBar" />
+            <label class="form-check-label" for="bb-con-shrinkingBar">The size of the {{ conDirection == 'long' ?
+              'bearish' : 'bullish' }} candle are gradually decrease showing that the momentum is decreasing.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.shrinkingBar" v-model="bbCon.shrinkingBarComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Wick Rejections</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-wickRejection" v-model="bbCon.wickRejection" />
+            <label class="form-check-label" for="bb-con-wickRejection">Wick show that it is rejecting a price level
+              (e.g. SR, TL).</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.wickRejection" v-model="bbCon.wickRejectionComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbCon.wickRejection">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-multipleWicksRejections" v-model="bbCon.multipleWicksRejections" />
+            <label class="form-check-label" for="bb-con-multipleWicksRejections">Multiple wick rejecting the price
+              level.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.multipleWicksRejections" v-model="bbCon.multipleWicksRejectionsComment"
+              placeholder="Comment" />
+          </div>
+          <h6>Price Pattern</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-headAndShoulder" v-model="bbCon.headAndShoulder" />
+            <label class="form-check-label" for="bb-con-headAndShoulder">A {{ conDirection == 'long' ? 'reversed ' : ''
+              }}head and shoulder is formed.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.headAndShoulder" v-model="bbCon.headAndShoulderComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbCon.headAndShoulder">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-hnSSlantedNeckLine" v-model="bbCon.hnSSlantedNeckLine" />
+            <label class="form-check-label" for="bb-con-hnSSlantedNeckLine">The neckline of head and shoulder is
+              slanted {{ conDirection == 'long' ? 'upward' : 'downward' }}.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.hnSSlantedNeckLine" v-model="bbCon.hnSSlantedNeckLineComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-wedges" v-model="bbCon.wedges" />
+            <label class="form-check-label" for="bb-con-wedges">A {{ conDirection == 'long' ? 'falling' : 'rising' }}
+              wedge is formed.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.wedges" v-model="bbCon.wedgesComment" placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbCon.wedges">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-brokeAndRetest" v-model="bbCon.brokeAndRetest" />
+            <label class="form-check-label" for="bb-con-brokeAndRetest">A breakout and retest of wedges is formed.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.brokeAndRetest" v-model="bbCon.brokeAndRetestComment"
+              placeholder="Comment" />
+          </div>
+          <h6>9 EMA</h6>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-nineEmaGradient" v-model="bbCon.nineEmaGradient" />
+            <label class="form-check-label" for="bb-con-nineEmaGradient">9 EMA gradient is pointing {{ conDirection == 'long' ?
+              'upward' : 'downward' }}.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.nineEmaGradient" v-model="bbCon.nineEmaGradientComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-nineRelativeClose" v-model="bbCon.nineRelativeClose" />
+            <label class="form-check-label" for="bb-con-nineRelativeClose">Price closed {{ conDirection == 'long' ? 'above' :
+              'below' }} the 9 EMA.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.nineRelativeClose" v-model="bbCon.nineRelativeCloseComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-nineRelativeStratShadow" v-model="bbCon.nineRelativeStratShadow" />
+            <label class="form-check-label" for="bb-con-nineRelativeStratShadow">9 EMA stay {{ conDirection == 'long' ? 'above' :
+              'below' }} the Strat Shadow.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.nineRelativeStratShadow" v-model="bbCon.nineRelativeStratShadowComment"
+              placeholder="Comment" />
+          </div>
+          <div class="form-group form-check ml-3" v-if="bbCon.nineRelativeStratShadow">
+            <input class="form-check-input" type="checkbox" value="" id="bb-con-nineFarFromStratShadow" v-model="bbCon.nineFarFromStratShadow" />
+            <label class="form-check-label" for="bb-con-nineFarFromStratShadow">9 EMA is far away from strat shadow showing a
+              strong momentum.</label>
+            <input type="text" class="form-control mt-1" v-if="bbCon.nineFarFromStratShadow" v-model="bbCon.nineFarFromStratShadowComment"
+              placeholder="Comment" />
+          </div>
 
         </div>
         <div class="card-footer">
